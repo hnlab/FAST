@@ -1,0 +1,9 @@
+- `code conda.env.fast.yml`
+- install pytorch-geometric 1.4.3 [via pip](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html#installation-via-pip-wheels)
+    - `python -c "import torch; print(torch.__version__)"` -> ~~1.9.0~~ 1.8.1 -> [TORCH=1.8.1](https://github.com/qubvel/segmentation_models.pytorch/issues/424#issuecomment-864961825)
+    - `python -c "import torch; print(torch.version.cuda)"` -> 10.2 -> CUDA=cu102
+    - `pip install torch-scatter -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html`
+    - `pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html`
+    - `pip install torch-geometric==1.4.3`
+    - `pip install torch-cluster -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html`
+    - `pip install torch-spline-conv -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html`
