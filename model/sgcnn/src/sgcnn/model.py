@@ -52,7 +52,7 @@ from torch_geometric.utils import scatter_
 
 from torch_geometric.nn import DataParallel as GeometricDataParallel
 from torch_geometric.data import Batch
-from .ggcnn import GatedGraphConv, PotentialNetAttention
+from ggcnn import GatedGraphConv, PotentialNetAttention
 from torch.nn import init
 
 
