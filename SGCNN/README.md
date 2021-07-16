@@ -6,13 +6,13 @@
     - line 3: `import pybel` -> `from openbabel import pybel`
     - line 147: `self.NAMED_PROPS = ['hyb', 'heavyvalence', 'heterovalence', 'partialcharge']` -> `self.NAMED_PROPS = ['hyb', 'heavydegree', 'heterodegree', 'partialcharge']`
 ```bash
-cd 1-featureize
+cd sgcnn_lig_alone/1-featureize
 export HDF5_USE_FILE_LOCKING='FALSE'`
 python featurize_split_data.py &> featurize_split_data.log
 ```
 ### 1.2 train & validate
 - GPU is required
 ```bash
-cd 2-train
+cd sgcnn_lig_alone/2-train
 qsub train.sh
 ```
