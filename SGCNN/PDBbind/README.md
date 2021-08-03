@@ -45,10 +45,18 @@
         - **`--rec true_rec`**
         - **`--dataset-name PDBbind_v2016`**
 #### 2.1.2 train
+- `DataListLoader`: 先shuffle，再drop_last；因此，要复现结果，应设置`drop_last=False`
+    - `generator`可设置shuffle的random seed
+    - `worker_init_fn(worker_id)`可设置`num_workers!=0`时各workers不同的random seed
+    - [补充信息：pytorch+numpy](https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects/)
+For trainning set, `shuffle=True/False`,(`drop_last=True`)
+For validation set, `drop_last = False`, (`shuffle=False`)
 - ligand alone
     - `--dataset-name PDBbind_v2016`
+    - `shuffle = False/True`
 - complex
     - `--dataset-name PDBbind_v2016`
+    - `shuffle = False/True`
 ### 2.2 core set: as test set?
 - `ls * -d > ../core_pdbid.csv`
 - `grep -f core_pdbid.csv ../pdbbind_v2016_refined-set/index/INDEX_refined_data_grepped.2016 > core_data.2016`

@@ -74,7 +74,7 @@ parser.add_argument("--non-covalent-threshold", type=float, default=7.5)
 parser.add_argument("--train-data", type=str, required=True)
 parser.add_argument("--val-data", type=str, required=True)
 parser.add_argument("--rec", default="false_rec", choices=['false_rec', 'true_rec'])
-# parser.add_argument("--use-docking", default=False, action="store_true")
+parser.add_argument("--shuffle", action="store_true")
 args = parser.parse_args()
 
 # seed all random number generators and set cudnn settings for deterministic: https://github.com/rusty1s/pytorch_geometric/issues/217
@@ -135,7 +135,7 @@ def train():
     train_dataloader = DataListLoader(
         train_dataset,
         batch_size=args.batch_size,
-        shuffle=False,
+        shuffle=args.shuffle,
         worker_init_fn=worker_init_fn,
         drop_last=True,
     )  # just to keep batch sizes even, since shuffling is used
@@ -145,7 +145,7 @@ def train():
         batch_size=args.batch_size,
         shuffle=False,
         worker_init_fn=worker_init_fn,
-        drop_last=True,
+        drop_last=False,
     )
 
     tqdm.write("{} complexes in training dataset".format(len(train_dataset)))
@@ -237,24 +237,6 @@ def train():
                         + "/model-epoch-{}-step-{}.pth".format(epoch, step),
                     )
                     if checkpoint_dict["validate_dict"]["r2"] > best_checkpoint_r2:
-                        fig, ax = plt.subplots()
-                        ax.set_title(f'{args.dataset_name}_{args.rec}_train_on_refine_epoch_{epoch}_step_{step}')
-                        ax.set_ylabel('predicted value')
-                        ax.set_xlabel('true value')
-                        ax.scatter(y_true, y_pred)
-                        ax.text(2,1,f'R2:{r2}; MAE:{mae}; pearsonr:{float(pearsonr[0])}; spearmanr:{float(spearmanr[0])}')
-                        fig.savefig(f'{args.checkpoint_dir}/train_epoch_{epoch}_step_{step}.png', dpi=300)
-                        plt.close(fig)
-
-                        fig_v, ax_v = plt.subplots()
-                        ax_v.set_title(f'{args.dataset_name}_{args.rec}_valid_on_refine_epoch_{epoch}_step_{step}')
-                        ax_v.set_ylabel('predicted value')
-                        ax_v.set_xlabel('true value')
-                        ax_v.scatter(checkpoint_dict["validate_dict"]["y_true"], checkpoint_dict["validate_dict"]["y_pred"])
-                        ax_v.text(2,1,f'R2:{checkpoint_dict["validate_dict"]["r2"]}; MAE:{checkpoint_dict["validate_dict"]["mae"]}; pearsonr:{float(checkpoint_dict["validate_dict"]["pearsonr"][0])}; spearmanr:{float(checkpoint_dict["validate_dict"]["spearmanr"][0])}')
-                        fig_v.savefig(f'{args.checkpoint_dir}/valid_epoch_{epoch}_step_{step}.png', dpi=300)
-                        plt.close(fig_v)
-
                         best_checkpoint_step = step
                         best_checkpoint_epoch = epoch
                         best_checkpoint_r2 = checkpoint_dict["validate_dict"]["r2"]
@@ -276,24 +258,6 @@ def train():
                 best_checkpoint_epoch = epoch
                 best_checkpoint_r2 = checkpoint_dict["validate_dict"]["r2"]
                 best_checkpoint_dict = checkpoint_dict
-
-                fig, ax = plt.subplots()
-                ax.set_title(f'{args.dataset_name}_{args.rec}_train_on_refine_epoch_{epoch}_step_{step}')
-                ax.set_ylabel('predicted value')
-                ax.set_xlabel('true value')
-                ax.scatter(y_true, y_pred)
-                ax.text(2,1,f'R2:{r2}; MAE:{mae}; pearsonr:{float(pearsonr[0])}; spearmanr:{float(spearmanr[0])}')
-                fig.savefig(f'{args.checkpoint_dir}/train_epoch_{epoch}_step_{step}.png', dpi=300)
-                plt.close(fig)
-
-                fig_v, ax_v = plt.subplots()
-                ax_v.set_title(f'{args.dataset_name}_{args.rec}_valid_on_refine_epoch_{epoch}_step_{step}')
-                ax_v.set_ylabel('predicted value')
-                ax_v.set_xlabel('true value')
-                ax_v.scatter(checkpoint_dict["validate_dict"]["y_true"], checkpoint_dict["validate_dict"]["y_pred"])
-                ax_v.text(2,1,f'R2:{checkpoint_dict["validate_dict"]["r2"]}; MAE:{checkpoint_dict["validate_dict"]["mae"]}; pearsonr:{float(checkpoint_dict["validate_dict"]["pearsonr"][0])}; spearmanr:{float(checkpoint_dict["validate_dict"]["spearmanr"][0])}')
-                fig_v.savefig(f'{args.checkpoint_dir}/valid_epoch_{epoch}_step_{step}.png', dpi=300)
-                plt.close(fig_v)
 
     if args.checkpoint:
         # once broken out of the loop, save last model
@@ -398,5 +362,5 @@ def main():
 
 
 if __name__ == "__main__":
-    print(f'trian_data: {args.train_data}; validate_data: {args.val_data}; dataset_name: {args.dataset_name}; feature_type: {args.feature_type}; preprocessing_type:{args.preprocessing_type}; batch_size: {args.batch_size}; checkpoint_dir: {args.checkpoint_dir}; epochs: {args.epochs}; checkpoint_iter: {args.checkpoint_iter}.')
+    print(f'trian_data: {args.train_data}; validate_data: {args.val_data}; dataset_name: {args.dataset_name}; feature_type: {args.feature_type}; preprocessing_type:{args.preprocessing_type}; batch_size: {args.batch_size}; checkpoint_dir: {args.checkpoint_dir}; epochs: {args.epochs}; checkpoint_iter: {args.checkpoint_iter}; shuffle: {args.shuffle}.')
     main()
