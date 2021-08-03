@@ -96,12 +96,14 @@ def featurize_pybel_complex(ligand_mol, pocket_mol, name, dataset_name):
 
     return data
 
-def split_data(affinity_df, test_ratio=0.1, valid_ratio=0.1):
-    rand_df = affinity_df.sample(frac=1)
-    test_idx = int(test_ratio * rand_df.shape[0])
-    valid_idx = int((test_ratio + valid_ratio) * rand_df.shape[0])
-    # cut_idx = int(valid_ratio * rand_df.shape[0])
-    test_df, valid_df, train_df = rand_df.iloc[:test_idx], rand_df.iloc[test_idx:valid_idx], rand_df.iloc[valid_idx:]
+def split_data(affinity_df, train_ratio=0.8, valid_ratio=0.1, test_ratio=0.1):
+    # random split into train/valid/test
+    index = np.random.permutation(len(affinity_df))
+    train_idx = index[:int(len(affinity_df)*train_ratio)]
+    valid_idx = index[int(len(affinity_df)*train_ratio):int(len(affinity_df)*(train_ratio+valid_ratio))]
+    test_idx = index[int(len(affinity_df)*(train_ratio+valid_ratio)):]
+    # sort by affinity within subset
+    test_df, valid_df, train_df = affinity_df.iloc[test_idx].sort_values(by=['-logKd/Ki']), affinity_df.iloc[valid_idx].sort_values(by=['-logKd/Ki']), affinity_df.iloc[train_idx].sort_values(by=['-logKd/Ki'])
     return test_df, valid_df, train_df
 
 def write_hdf(input_df, set_name, failure_dict, element_dict, process_type, dataset_name):
@@ -134,7 +136,7 @@ def write_hdf(input_df, set_name, failure_dict, element_dict, process_type, data
 
             try:
                 if args.rec == 'false_rec':
-                    crystal_pocket = next(pybel.readfile('pdb', '/pubhome/xli02/project/PLIM/deep_learning/FAST/fast_plim/complex/false_rec.pdb')) 
+                    crystal_pocket = next(pybel.readfile('pdb', '/pubhome/xli02/project/PLIM/deep_learning/FAST/fast_plim/false_rec.pdb')) 
                 elif args.rec == 'true_rec':
                     # crystal_pocket = next(pybel.readfile('pdb', rec_pdb))
                     crystal_pocket = next(pybel.readfile('mol2', rec_mol2))  

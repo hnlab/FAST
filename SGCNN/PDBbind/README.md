@@ -35,10 +35,12 @@
     - `grep -v '#' INDEX_refined_data.2016|awk '{print $1,$4}' > INDEX_refined_data_grepped.2016`
     - Featurize: split into train/validate/test
         - **`--dataset-name PDBbind_v2016`**
+        - 先随机分train/valid/test(`np.random.permutation`)，再在每个子集内按活性排序
 - complex
     - pocket.pdb用Chimera加氢加charge？
         - `ls /pubhome/xli02/Downloads/dataset/PDBbind/pdbbind_v2016_refined-set/*/*_pocket.pdb|parallel -k --joblog add_charge_job.log 'bash add_charge.sh {} >> add_charge.log'`
     - Featurize: split into train/validate/test
+        - 先随机分train/valid/test(`np.random.permutation`)，再在每个子集内按活性排序
         - `pocket.pdb` -> **`pocket.mol2`**
         - **`--rec true_rec`**
         - **`--dataset-name PDBbind_v2016`**

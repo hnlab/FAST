@@ -134,7 +134,7 @@ def write_hdf(input_df, set_name, failure_dict, element_dict, process_type, data
 
             try:
                 if args.rec == 'false_rec':
-                    crystal_pocket = next(pybel.readfile('pdb', '/pubhome/xli02/project/PLIM/deep_learning/FAST/fast_plim/complex/false_rec.pdb')) 
+                    crystal_pocket = next(pybel.readfile('pdb', '/pubhome/xli02/project/PLIM/deep_learning/FAST/fast_plim/false_rec.pdb')) 
                 elif args.rec == 'true_rec':
                     crystal_pocket = next(pybel.readfile('mol2', rec_mol2)) 
 
@@ -208,6 +208,7 @@ def main():
     # test_name = 'PDBbind_test'
     # failure_dict = write_hdf(test_df, test_name, failure_dict, element_dict, process_type, args.dataset_name)
     test_name = 'PDBbind_v2016_core'
+    affi_df = affi_df.sort_values(by=['-logKd/Ki'])
     failure_dict = write_hdf(affi_df, test_name, failure_dict, element_dict, process_type, args.dataset_name)
 
 
