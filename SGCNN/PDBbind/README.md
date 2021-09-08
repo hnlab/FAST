@@ -37,7 +37,7 @@
         - **`--dataset-name PDBbind_v2016`**
         - 先随机分train/valid/test(`np.random.permutation`)，再在每个子集内按活性排序
 - complex
-    - pocket.pdb用Chimera加氢加charge？
+    - **pocket.pdb用Chimera加氢加charge**？
         - `ls /pubhome/xli02/Downloads/dataset/PDBbind/pdbbind_v2016_refined-set/*/*_pocket.pdb|parallel -k --joblog add_charge_job.log 'bash add_charge.sh {} >> add_charge.log'`
     - Featurize: split into train/validate/test
         - 先随机分train/valid/test(`np.random.permutation`)，再在每个子集内按活性排序
@@ -87,6 +87,13 @@ python test.py \
     --output ../test_results/refined_set/lig_alone \
     --test-data ../datasets/core/lig_alone/PDBbind_v2016_core_false_rec.hdf &> test_lig_alone.log
 ```
+- `best_checkpoint.pth` 不是最好的model？
+- `RuntimeError: CUDA out of memory.`
+    - https://segmentfault.com/a/1190000022589080
+    - **`with torch.no_grad():`**
+    - 版本一致
+    - 调小batch_size
+    - `nvidia-smi` 查看显存 / 关掉jupyter
 ## 3. 结果
 
 ||r2_valid|mae_valid|mse_valid|pearsonr_valid|spearmanr_valid|r2_test|mae_test|mse_test|pearsonr_test|spearmanr_test|loss|

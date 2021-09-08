@@ -7,7 +7,7 @@
     - line 147: `self.NAMED_PROPS = ['hyb', 'heavyvalence', 'heterovalence', 'partialcharge']` -> `self.NAMED_PROPS = ['hyb', 'heavydegree', 'heterodegree', 'partialcharge']`
 ```bash
 cd sgcnn_lig_alone/1-featureize
-export HDF5_USE_FILE_LOCKING='FALSE'`
+export HDF5_USE_FILE_LOCKING='FALSE'
 python featurize_split_data.py &> featurize_split_data.log
 ```
 ### 1.2 train & validate
